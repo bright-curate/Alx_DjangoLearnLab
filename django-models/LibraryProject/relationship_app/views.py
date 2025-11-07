@@ -3,7 +3,14 @@ from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from .models import Book
 from .models import Library 
-from .views import list_books
+from django.urls import path
+from .views import list_books, LibraryDetailView  # required import
+
+urlpatterns = [
+    path('books/', list_books, name='list_books'),  # function-based view
+    path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),  # class-based view
+]
+
 
 # Function-based view
 def list_books(request):
