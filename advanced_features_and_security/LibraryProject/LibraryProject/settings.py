@@ -143,3 +143,28 @@ SESSION_COOKIE_SECURE = True
 
 # Redirect all non-HTTPS requests to HTTPS
 SECURE_SSL_REDIRECT = True
+
+# ------------------------------
+# SECURITY CONFIGURATIONS
+# ------------------------------
+
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Browser-level XSS protection
+SECURE_BROWSER_XSS_FILTER = True
+
+# Prevent MIME-type sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Clickjacking protection
+X_FRAME_OPTIONS = "DENY"
+
+# Secure cookies
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
