@@ -30,3 +30,9 @@ def books(request):
     output = ", ".join([book.title for book in books])
     return HttpResponse(f"Books: {output}")
 
+def example_form_view(request):
+    form = ExampleForm(request.POST or None)
+    if form.is_valid():
+        # process form
+        pass
+    return render(request, 'bookshelf/form_example.html', {'form': form})
