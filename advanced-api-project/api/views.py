@@ -4,6 +4,7 @@ from rest_framework import generics, permissions
 from .models import Book
 from .serializers import BookSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django_filters import rest_framework 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
@@ -18,6 +19,18 @@ class BookListView(generics.ListAPIView):
     serializer_class = BookSerializer
     permission_classes = [permissions.AllowAny]
 
+
+ # Filtering, Searching, Ordering
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+ # Fields allowed for filtering
+    filterset_fields = ['title', 'author', 'publication_year']
+
+# Fields allowed for searching
+    search_fields = ['title', 'author__name']
+
+# Fields allowed for ordering
+    ordering_fields = ['title', 'publication_year']
 
 """
 DetailView:
@@ -41,13 +54,8 @@ class BookCreateView(generics.CreateAPIView):
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-def perform_create(self, serializer):
-    """
-    Custom behavior for creating books:
-    - You could automatically assign the author to the logged-in user
-      if your system supports user authorship.
-    """
-    serializer.save()
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 
@@ -61,12 +69,8 @@ class BookUpdateView(generics.UpdateAPIView):
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-def perform_update(self, serializer):
-    """
-    Custom behavior for updating books:
-    - Add hooks for logging or restricting updates.
-    """
-    serializer.save()
+    def perform_update(self, serializer):
+        serializer.save()
 
 
 
@@ -80,14 +84,3 @@ class BookDeleteView(generics.DestroyAPIView):
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
 
- # Filtering, Searching, Ordering
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-
- # Fields allowed for filtering
-    filterset_fields = ['title', 'author', 'publication_year']
-
-# Fields allowed for searching
-    search_fields = ['title', 'author__name']
-
-# Fields allowed for ordering
-    ordering_fields = ['title', 'publication_year']
