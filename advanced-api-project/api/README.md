@@ -24,3 +24,13 @@ Django REST Framework’s generic views and permissions.
 - Validation: publication_year cannot be in the future
 - Custom hooks available: perform_create, perform_update
 
+# Filtering
+/books/?title=SomeTitle
+/books/?publication_year=2023
+
+# Searching
+/books/?search=tolkien
+
+# Ordering
+/books/?ordering=title
+/books/?ordering=-publication_year
