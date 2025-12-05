@@ -125,3 +125,25 @@ blog/templates/blog/logout.html
 blog/templates/blog/register.html
 
 blog/templates/blog/profile.html
+
+## Blog Post Management (CRUD)
+
+This app provides full CRUD for blog posts.
+
+### URLs
+- `GET /posts/` — List all posts
+- `GET /posts/<pk>/` — View a single post
+- `GET/POST /posts/new/` — Create new post (authenticated users only)
+- `GET/POST /posts/<pk>/edit/` — Edit post (only author)
+- `GET/POST /posts/<pk>/delete/` — Delete post (only author)
+
+### Permissions
+- Anyone can view the list and details.
+- Only authenticated users can create posts.
+- Only the author of a post can edit or delete it.
+
+### Run locally
+```bash
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
