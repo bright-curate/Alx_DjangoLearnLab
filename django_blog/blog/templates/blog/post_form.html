@@ -19,3 +19,13 @@
   </form>
 </body>
 </html>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {{ form.title.label_tag }} {{ form.title }}
+  {{ form.content.label_tag }} {{ form.content }}
+  <label for="id_tags_input">Tags (comma separated)</label>
+  {{ form.tags_input }}
+  <button type="submit">Save</button>
+</form>

@@ -169,3 +169,14 @@ python manage.py runserver
 ### Running Tests
 ```bash
 python manage.py test blog.tests_comments
+
+### Tagging & Search
+
+**Tagging**
+- Add tags to posts when creating/editing using the "Tags" input (comma-separated).
+- Tags are created automatically if they don't exist.
+- Each post shows its tags; clicking a tag shows all posts with that tag: `/tags/<tag_name>/`.
+
+**Search**
+- Use the search box (site header or posts list) to search post titles, content, and tags.
+- Example: `/post/?q=django` or `/search/?q=api`

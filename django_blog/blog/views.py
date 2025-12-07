@@ -2,14 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
-
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from .forms import PostForm, CommentForm
 from .forms import CustomUserCreationForm
+from django.db.models import Q
 
 class UserLoginView(LoginView):
     template_name = "blog/login.html"
@@ -47,6 +47,68 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-published_date']
     paginate_by = 10  # optional
+
+    def get_queryset(self):
+        qs = super().get_queryset().select_related('author').prefetch_related('tags')
+        q = self.request.GET.get('q', '').strip()
+        tag = self.request.GET.get('tag', '').strip()
+        if q:
+            # Search title OR content OR tag name
+            qs = qs.filter(
+                Q(title__icontains=q) |
+                Q(content__icontains=q) |
+                Q(tags__name__icontains=q)
+            ).distinct()
+        if tag:
+            qs = qs.filter(tags__name__iexact=tag).distinct()
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['q'] = self.request.GET.get('q', '')
+        ctx['tag'] = self.request.GET.get('tag', '')
+        return ctx
+
+
+# Tag view: show posts for a tag
+class TagPostListView(ListView):
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self):
+        tag_name = self.kwargs.get('tag_name')
+        return Post.objects.filter(tags__name__iexact=tag_name).select_related('author').prefetch_related('tags').order_by('-published_date')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['tag_name'] = self.kwargs.get('tag_name')
+        return ctx
+
+
+# Search view (optional — PostListView already handles q param; we provide a separate endpoint)
+class SearchResultsView(ListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self):
+        q = self.request.GET.get('q', '').strip()
+        qs = Post.objects.none()
+        if q:
+            qs = Post.objects.filter(
+                Q(title__icontains=q) |
+                Q(content__icontains=q) |
+                Q(tags__name__icontains=q)
+            ).distinct().select_related('author').prefetch_related('tags')
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['q'] = self.request.GET.get('q', '')
+        return ctx
 
 class PostDetailView(DetailView):
     model = Post

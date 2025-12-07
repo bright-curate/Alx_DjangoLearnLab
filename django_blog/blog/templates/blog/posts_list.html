@@ -48,3 +48,8 @@
   </main>
 </body>
 </html>
+
+<form method="get" action="{% url 'post-list' %}">
+  <input type="text" name="q" placeholder="Search posts..." value="{{ q|default:'' }}">
+  <button type="submit">Search</button>
+</form>
