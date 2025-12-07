@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, Comment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -25,3 +25,26 @@ class PostForm(forms.ModelForm):
         if not title:
             raise forms.ValidationError("Title cannot be empty.")
         return title
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content']
+
+class CommentForm(forms.ModelForm):
+    """
+    Simple ModelForm for comments. Only exposes 'content'.
+    """
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Write your comment...'}),
+        }
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content', '').strip()
+        if not content:
+            raise forms.ValidationError("Comment cannot be empty.")
+        return content
+    

@@ -147,3 +147,25 @@ This app provides full CRUD for blog posts.
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
+
+
+## Comment System
+
+### Overview
+- Users can read comments for each post.
+- Authenticated users can add comments, edit their own comments, and delete their own comments.
+
+### URLs
+- `POST /post/<post_id>/comments/new/` — create a comment (auth required)
+- `GET/POST /post/comments/<pk>/edit/` — edit comment (author only)
+- `GET/POST /post/comments/<pk>/delete/` — delete comment (author only)
+
+### Usage
+- Comments appear on the post detail page.
+- Unauthenticated users see a prompt to login for posting.
+- CSRF protection enforced via `{% csrf_token %}`.
+- Only comment authors can edit or delete comments.
+
+### Running Tests
+```bash
+python manage.py test blog.tests_comments
