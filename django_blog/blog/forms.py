@@ -2,6 +2,7 @@ from django import forms
 from .models import Post, Comment, Tag
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from taggit.forms import TagWidget
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -18,6 +19,7 @@ class PostForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Post title', 'class': 'form-input'}),
             'content': forms.Textarea(attrs={'placeholder': 'Write your post here...', 'class': 'form-textarea', 'rows': 10}),
+            'tags': TagWidget(),
         }
 
     def clean_title(self):
