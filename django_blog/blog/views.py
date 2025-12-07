@@ -10,6 +10,7 @@ from .models import Post, Comment, Tag
 from .forms import PostForm, CommentForm
 from .forms import CustomUserCreationForm
 from django.db.models import Q
+from taggit.models import Tag
 
 class UserLoginView(LoginView):
     template_name = "blog/login.html"
@@ -197,3 +198,12 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return post.author == self.request.user
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = "blog/posts_by_tag.html"
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get("tag_slug")
+        return Post.objects.filter(tags__slug=tag_slug)
